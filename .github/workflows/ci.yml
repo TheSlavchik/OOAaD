@@ -1,0 +1,37 @@
+name: dotnet package
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
+
+      - name: Test
+        run: >
+          dotnet test --configuration Release --no-build --verbosity normal
+          -p:CollectCoverage=true
+          -p:CoverletOutputFormat=opencover
+          -p:CoverletOutput=./coverage/
+          -p:Threshold=90
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./**/coverage.opencover.xml
+          fail_ci_if_error: true
