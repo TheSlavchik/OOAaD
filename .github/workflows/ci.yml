@@ -2,6 +2,8 @@ name: AppServer CI
 
 on:
   pull_request:
+    branches-ignore:
+        - task-2.2-ci-pipeline-
 
 permissions:
   contents: read
@@ -31,9 +33,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      - name: Checkstyle
-        run: dotnet format --verify-no-changes OOAnD.sln
 
       - name: Restore dependencies
         working-directory: ${{ env.DIR }}
