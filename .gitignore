@@ -55,3 +55,29 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# ========== JetBrains Rider ==========
+.idea/
+
+# ========== Generated source files ==========
+# Source generators output (если используется)
+**/Generated/**
+
+# ========== Modern .NET additions ==========
+# BenchmarkDotNet artifacts
+BenchmarkDotNet.Artifacts/
+
+# Entity Framework Core migrations snapshot (если не коммитите миграции)
+# *.Designer.cs
+
+# Code coverage reports (дополнительно)
+coverage/
+*.coverage
+*.coveragexml
+
+# Playwright (если используется)
+playwright-report/
+test-results/
+
+# SpecFlow test results (если используется)
+TestResults/
