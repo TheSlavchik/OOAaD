@@ -58,7 +58,7 @@ nunit-*.xml
 
 # ========== JetBrains Rider ==========
 .idea/
-.user
+*.user
 
 # ========== Generated source files ==========
 # Source generators output (если используется)
