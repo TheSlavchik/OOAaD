@@ -1,0 +1,70 @@
+name: AppServer CI
+
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  DIR: ./
+  DOTNET_VERSION: '7.0.x'
+
+jobs:
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Checkstyle
+        run: dotnet format --verify-no-changes OOAnD.sln
+
+      - name: Restore dependencies
+        working-directory: ${{ env.DIR }}
+        run: dotnet restore
+
+      - name: Build
+        working-directory: ${{ env.DIR }}
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test with coverage
+        working-directory: ${{ env.DIR }}
+        run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Generate Coverage Report & Enforce 90% Threshold
+        id: coverage
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '90 90'
+
+      - name: Post Coverage Report to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: always()
+        with:
+          recreate: true
+          path: code-coverage-results.md
