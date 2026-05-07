@@ -2,8 +2,9 @@ name: AppServer CI
 
 on:
   pull_request:
-    branches-ignore:
-        - task-2.2-ci-pipeline-
+    paths:
+      - '**/*Tests/**'
+      - '*.sln'
 
 permissions:
   contents: read
