@@ -45,13 +45,19 @@ jobs:
 
       - name: Test with coverage
         working-directory: ${{ env.DIR }}
-        run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: |
+          dotnet test --configuration Release --no-build \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./coverage
+          # Debug: Show what coverage files were generated
+          echo "Coverage files generated:"
+          find ./coverage -name "*.xml" -o -name "coverage*" | head -20
 
       - name: Generate Coverage Report & Enforce 90% Threshold
         id: coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: coverage/**/coverage.cobertura.xml
+          filename: '**/coverage.cobertura.xml'
           badge: true
           fail_below_min: true
           format: markdown
@@ -60,6 +66,17 @@ jobs:
           indicators: true
           output: both
           thresholds: '90 90'
+
+      - name: Debug - Check if coverage report exists
+        if: always()
+        run: |
+          if [ -f code-coverage-results.md ]; then
+            echo "Report file exists"
+            cat code-coverage-results.md
+          else
+            echo "Report file NOT found. Current directory contents:"
+            ls -la
+          fi
 
       - name: Post Coverage Report to PR
         uses: marocchino/sticky-pull-request-comment@v2
