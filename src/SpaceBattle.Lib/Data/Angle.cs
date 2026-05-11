@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib.Data;
 
 public class Angle
 {
-    private static int _denominator = 16;
+    private static int _denominator = 8;
     private readonly int _numerator;
 
     public static int Denominator
@@ -15,7 +15,7 @@ public class Angle
 
     public Angle(int numerator)
     {
-        _numerator = numerator;
+        _numerator = ((numerator % _denominator) + _denominator) % _denominator;
     }
 
     private int NormalizedNumerator => ((_numerator % _denominator) + _denominator) % _denominator;
