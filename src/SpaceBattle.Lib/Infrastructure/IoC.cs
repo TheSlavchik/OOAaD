@@ -6,6 +6,11 @@ public static class IoC
 {
     private static readonly ConcurrentDictionary<string, Func<object[], object>> _strategies = new();
 
+    public static void Clear()
+    {
+        _strategies.Clear();
+    }
+
     public static void Register(string key, Func<object[], object> strategy)
     {
         _strategies[key] = strategy;
