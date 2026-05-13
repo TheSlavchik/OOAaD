@@ -15,6 +15,7 @@ public class CreateMacroCommandStrategyTests
     [Fact]
     public void Resolve_WhenSpecAndAllCommandsRegistered_MacroCommandExecutesAllCommands()
     {
+        IoC.Clear();
         var mockCommand1 = new Mock<ICommand>();
         var mockCommand2 = new Mock<ICommand>();
 
@@ -36,6 +37,7 @@ public class CreateMacroCommandStrategyTests
     [Fact]
     public void Resolve_WhenSpecNotRegistered_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         var strategy = new CreateMacroCommandStrategy("NonExistent");
 
         Assert.Throws<InvalidOperationException>(() => strategy.Resolve(Array.Empty<object>()));
@@ -44,6 +46,7 @@ public class CreateMacroCommandStrategyTests
     [Fact]
     public void Resolve_WhenCommandNotRegistered_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         IoC.Register("Specs.Test", _ => new[] { "Command1", "Command2" });
         IoC.Register("Commands.Command1", _ => new Mock<ICommand>().Object);
 
