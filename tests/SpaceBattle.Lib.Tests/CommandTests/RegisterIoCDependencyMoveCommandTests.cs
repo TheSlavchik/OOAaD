@@ -15,12 +15,14 @@ public class RegisterIoCDependencyMoveCommandTests
     [Fact]
     public void Execute_WhenResolvingUnregisteredDependency_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         Assert.Throws<InvalidOperationException>(() => IoC.Resolve<ICommand>("Commands.Move", new Dictionary<string, object>()));
     }
 
     [Fact]
     public void Execute_RegistersDependency_AndMoveCommandResolves()
     {
+        IoC.Clear();
         var obj = new Dictionary<string, object>();
 
         var mockMovable = new Mock<IMovable>();
@@ -42,6 +44,7 @@ public class RegisterIoCDependencyMoveCommandTests
     [Fact]
     public void Execute_WhenAdapterNotRegistered_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         var obj = new Dictionary<string, object>();
 
         var registerCommand = new RegisterIoCDependencyMoveCommand();

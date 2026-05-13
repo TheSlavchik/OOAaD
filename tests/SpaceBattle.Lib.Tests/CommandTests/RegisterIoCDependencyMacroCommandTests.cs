@@ -15,6 +15,7 @@ public class RegisterIoCDependencyMacroCommandTests
     [Fact]
     public void Execute_WhenResolvingUnregisteredDependency_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         var commands = Array.Empty<ICommand>();
         Assert.Throws<InvalidOperationException>(() => IoC.Resolve<ICommand>("Commands.Macro", (object)commands));
     }
@@ -22,6 +23,7 @@ public class RegisterIoCDependencyMacroCommandTests
     [Fact]
     public void Execute_RegistersDependency_AndMacroCommandResolves()
     {
+        IoC.Clear();
         var mockCommand1 = new Mock<ICommand>();
         var mockCommand2 = new Mock<ICommand>();
         var commands = new ICommand[] { mockCommand1.Object, mockCommand2.Object };

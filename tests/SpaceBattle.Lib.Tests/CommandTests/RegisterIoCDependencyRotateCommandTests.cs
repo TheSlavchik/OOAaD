@@ -15,12 +15,14 @@ public class RegisterIoCDependencyRotateCommandTests
     [Fact]
     public void Execute_WhenResolvingUnregisteredDependency_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         Assert.Throws<InvalidOperationException>(() => IoC.Resolve<ICommand>("Commands.Rotate", new Dictionary<string, object>()));
     }
 
     [Fact]
     public void Execute_RegistersDependency_AndRotateCommandResolves()
     {
+        IoC.Clear();
         var obj = new Dictionary<string, object>();
 
         var mockRotatable = new Mock<IRotatable>();
@@ -42,6 +44,7 @@ public class RegisterIoCDependencyRotateCommandTests
     [Fact]
     public void Execute_WhenAdapterNotRegistered_ThrowsInvalidOperationException()
     {
+        IoC.Clear();
         var obj = new Dictionary<string, object>();
 
         var registerCommand = new RegisterIoCDependencyRotateCommand();
