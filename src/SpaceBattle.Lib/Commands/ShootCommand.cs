@@ -39,10 +39,12 @@ public class ShootCommand : ICommand
         var macroCommand = new MacroCommand([authCommand, createTorpedoCommand]);
         macroCommand.Execute();
 
-        var torpedo = _repository.GetById(createTorpedoCommand.CreatedTorpedoId!.Value)!;
+        var torpedoId = createTorpedoCommand.CreatedTorpedoId!.Value;
+        var torpedo = _repository.GetById(torpedoId)!;
         var movable = IoC.Resolve<IMovable>("Adapters.IMovingObject", torpedo);
         var moveCommand = new MoveCommand(movable);
-        var sendCommand = new SendCommand(moveCommand, _receiver);
+        var boundCommand = new ObjectBoundCommand(moveCommand, torpedoId, _repository);
+        var sendCommand = new SendCommand(boundCommand, _receiver);
         sendCommand.Execute();
     }
 }
