@@ -8,6 +8,29 @@ namespace SpaceBattle.Lib.Tests.CommandTests;
 public class CheckCollisionCommandTests
 {
     [Fact]
+    public void CollisionException_ParameterlessConstructor_CanBeCreated()
+    {
+        var exception = new CollisionException();
+        Assert.IsType<CollisionException>(exception);
+    }
+
+    [Fact]
+    public void CollisionException_MessageConstructor_SetsMessage()
+    {
+        var exception = new CollisionException("test message");
+        Assert.Equal("test message", exception.Message);
+    }
+
+    [Fact]
+    public void CollisionException_MessageAndInnerExceptionConstructor_SetsMessageAndInnerException()
+    {
+        var inner = new Exception("inner");
+        var exception = new CollisionException("outer", inner);
+        Assert.Equal("outer", exception.Message);
+        Assert.Same(inner, exception.InnerException);
+    }
+
+    [Fact]
     public void Execute_ObjectsDoNotCollide_NoExceptionThrown()
     {
         var mock1 = new Mock<ICollidable>();
