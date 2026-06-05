@@ -16,7 +16,14 @@ public class GameLoop
         while (_queue.Count > 0)
         {
             var command = _queue.Dequeue();
-            command.Execute();
+            try
+            {
+                command.Execute();
+            }
+            catch
+            {
+                // Continue executing remaining commands
+            }
         }
     }
 }
