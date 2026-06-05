@@ -141,28 +141,33 @@ public class CreateTorpedoCommandTests
     {
         Angle.Denominator = 16;
 
-        _mockShooter.Setup(s => s.Position).Returns(new Vector(0, 0));
-        _mockShooter.Setup(s => s.Angle).Returns(new Angle(0));
+        try
+        {
+            _mockShooter.Setup(s => s.Position).Returns(new Vector(0, 0));
+            _mockShooter.Setup(s => s.Angle).Returns(new Angle(0));
 
-        IDictionary<string, object>? capturedTorpedo = null;
-        _mockRepo.Setup(r => r.Add(It.IsAny<Guid>(), It.IsAny<IDictionary<string, object>>()))
-            .Callback<Guid, IDictionary<string, object>>((_, obj) => capturedTorpedo = obj);
+            IDictionary<string, object>? capturedTorpedo = null;
+            _mockRepo.Setup(r => r.Add(It.IsAny<Guid>(), It.IsAny<IDictionary<string, object>>()))
+                .Callback<Guid, IDictionary<string, object>>((_, obj) => capturedTorpedo = obj);
 
-        var command = new CreateTorpedoCommand(
-            _mockShooter.Object, _mockRepo.Object, TorpedoSpeed, Offset);
-        command.Execute();
+            var command = new CreateTorpedoCommand(
+                _mockShooter.Object, _mockRepo.Object, TorpedoSpeed, Offset);
+            command.Execute();
 
-        Assert.NotNull(capturedTorpedo);
+            Assert.NotNull(capturedTorpedo);
 
-        var expectedPosition = new Vector(2, 0);
-        var actualPosition = Assert.IsType<Vector>(capturedTorpedo["position"]);
-        Assert.Equal(expectedPosition, actualPosition);
+            var expectedPosition = new Vector(2, 0);
+            var actualPosition = Assert.IsType<Vector>(capturedTorpedo["position"]);
+            Assert.Equal(expectedPosition, actualPosition);
 
-        var expectedVelocity = new Vector(3, 0);
-        var actualVelocity = Assert.IsType<Vector>(capturedTorpedo["velocity"]);
-        Assert.Equal(expectedVelocity, actualVelocity);
-
-        Angle.Denominator = 8;
+            var expectedVelocity = new Vector(3, 0);
+            var actualVelocity = Assert.IsType<Vector>(capturedTorpedo["velocity"]);
+            Assert.Equal(expectedVelocity, actualVelocity);
+        }
+        finally
+        {
+            Angle.Denominator = 8;
+        }
     }
 
     [Fact]
@@ -170,27 +175,32 @@ public class CreateTorpedoCommandTests
     {
         Angle.Denominator = 16;
 
-        _mockShooter.Setup(s => s.Position).Returns(new Vector(0, 0));
-        _mockShooter.Setup(s => s.Angle).Returns(new Angle(2));
+        try
+        {
+            _mockShooter.Setup(s => s.Position).Returns(new Vector(0, 0));
+            _mockShooter.Setup(s => s.Angle).Returns(new Angle(2));
 
-        IDictionary<string, object>? capturedTorpedo = null;
-        _mockRepo.Setup(r => r.Add(It.IsAny<Guid>(), It.IsAny<IDictionary<string, object>>()))
-            .Callback<Guid, IDictionary<string, object>>((_, obj) => capturedTorpedo = obj);
+            IDictionary<string, object>? capturedTorpedo = null;
+            _mockRepo.Setup(r => r.Add(It.IsAny<Guid>(), It.IsAny<IDictionary<string, object>>()))
+                .Callback<Guid, IDictionary<string, object>>((_, obj) => capturedTorpedo = obj);
 
-        var command = new CreateTorpedoCommand(
-            _mockShooter.Object, _mockRepo.Object, TorpedoSpeed, Offset);
-        command.Execute();
+            var command = new CreateTorpedoCommand(
+                _mockShooter.Object, _mockRepo.Object, TorpedoSpeed, Offset);
+            command.Execute();
 
-        Assert.NotNull(capturedTorpedo);
+            Assert.NotNull(capturedTorpedo);
 
-        var expectedPosition = new Vector(2, 2);
-        var actualPosition = Assert.IsType<Vector>(capturedTorpedo["position"]);
-        Assert.Equal(expectedPosition, actualPosition);
+            var expectedPosition = new Vector(2, 2);
+            var actualPosition = Assert.IsType<Vector>(capturedTorpedo["position"]);
+            Assert.Equal(expectedPosition, actualPosition);
 
-        var expectedVelocity = new Vector(3, 3);
-        var actualVelocity = Assert.IsType<Vector>(capturedTorpedo["velocity"]);
-        Assert.Equal(expectedVelocity, actualVelocity);
-
-        Angle.Denominator = 8;
+            var expectedVelocity = new Vector(3, 3);
+            var actualVelocity = Assert.IsType<Vector>(capturedTorpedo["velocity"]);
+            Assert.Equal(expectedVelocity, actualVelocity);
+        }
+        finally
+        {
+            Angle.Denominator = 8;
+        }
     }
 }
