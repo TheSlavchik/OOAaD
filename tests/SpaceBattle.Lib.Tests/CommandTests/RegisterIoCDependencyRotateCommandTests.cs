@@ -5,6 +5,7 @@ using SpaceBattle.Lib.Infrastructure;
 
 namespace SpaceBattle.Lib.Tests.CommandTests;
 
+[Collection("IoC")]
 public class RegisterIoCDependencyRotateCommandTests
 {
     public RegisterIoCDependencyRotateCommandTests()
