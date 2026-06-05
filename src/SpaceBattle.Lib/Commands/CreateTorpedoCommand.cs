@@ -10,7 +10,13 @@ public class CreateTorpedoCommand : ICommand
     private readonly int _torpedoSpeed;
     private readonly int _offset;
 
-    public CreateTorpedoCommand(IShootingObject shooter, IGameObjectRepository repository, int torpedoSpeed, int offset)
+    public Guid? CreatedTorpedoId { get; private set; }
+
+    public CreateTorpedoCommand(
+        IShootingObject shooter,
+        IGameObjectRepository repository,
+        int torpedoSpeed,
+        int offset)
     {
         _shooter = shooter;
         _repository = repository;
@@ -38,6 +44,7 @@ public class CreateTorpedoCommand : ICommand
 
         var torpedoId = Guid.NewGuid();
         _repository.Add(torpedoId, torpedo);
+        CreatedTorpedoId = torpedoId;
     }
 
     private static int[] AngleToDirection(Angle angle)
