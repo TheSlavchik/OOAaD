@@ -61,4 +61,157 @@ public class RegisterIoCDependencyCollidableObjectAdapterTests
         Assert.Equal(position, collidable.Position);
         Assert.Equal(radius, collidable.Radius);
     }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_WhenPositionIsMissing_ThrowsInvalidOperationException()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "radius", 3 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.Throws<InvalidOperationException>(() => collidable.Position);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_WhenRadiusIsMissing_ThrowsInvalidOperationException()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "position", new Vector(12, 5) }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.Throws<InvalidOperationException>(() => collidable.Radius);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_WhenPositionHasWrongType_ThrowsInvalidOperationException()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "position", "not a vector" },
+            { "radius", 3 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.Throws<InvalidOperationException>(() => collidable.Position);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_WhenRadiusHasWrongType_ThrowsInvalidOperationException()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "position", new Vector(12, 5) },
+            { "radius", "not an int" }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.Throws<InvalidOperationException>(() => collidable.Radius);
+    }
+
+    [Fact]
+    public void Execute_RegisterCommand_ExecutesWithoutException()
+    {
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+
+        var exception = Record.Exception(() => registerCommand.Execute());
+
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_DifferentObjectsHaveDifferentPositions()
+    {
+        var obj1 = new Dictionary<string, object>
+        {
+            { "position", new Vector(0, 0) },
+            { "radius", 1 }
+        };
+        var obj2 = new Dictionary<string, object>
+        {
+            { "position", new Vector(10, 10) },
+            { "radius", 5 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable1 = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj1);
+        var collidable2 = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj2);
+
+        Assert.NotEqual(collidable1.Position, collidable2.Position);
+        Assert.NotEqual(collidable1.Radius, collidable2.Radius);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_ReturnsCorrectRadiusType()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "position", new Vector(0, 0) },
+            { "radius", 7 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.IsType<int>(collidable.Radius);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_ZeroRadiusIsValid()
+    {
+        var obj = new Dictionary<string, object>
+        {
+            { "position", new Vector(0, 0) },
+            { "radius", 0 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", obj);
+
+        Assert.Equal(0, collidable.Radius);
+    }
+
+    [Fact]
+    public void Execute_ResolvedAdapter_AdapterStateIsIndependentBetweenInstances()
+    {
+        var sharedDict = new Dictionary<string, object>
+        {
+            { "position", new Vector(1, 2) },
+            { "radius", 3 }
+        };
+
+        var registerCommand = new RegisterIoCDependencyCollidableObjectAdapter();
+        registerCommand.Execute();
+
+        var collidable1 = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", sharedDict);
+        var collidable2 = IoC.Resolve<ICollidable>("Adapters.ICollidableObject", sharedDict);
+
+        Assert.Equal(collidable1.Position, collidable2.Position);
+        Assert.Equal(collidable1.Radius, collidable2.Radius);
+    }
 }
