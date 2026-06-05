@@ -7,6 +7,21 @@ namespace SpaceBattle.Lib.Tests.CommandTests;
 public class ObjectBoundCommandTests
 {
     [Fact]
+    public void ObjectIdProperty_ReturnsCorrectId()
+    {
+        var objectId = Guid.NewGuid();
+        var obj = new Dictionary<string, object>();
+        var mockRepo = new Mock<IGameObjectRepository>();
+        mockRepo.Setup(r => r.GetById(objectId)).Returns(obj);
+
+        var mockInner = new Mock<ICommand>();
+
+        var command = new ObjectBoundCommand(mockInner.Object, objectId, mockRepo.Object);
+
+        Assert.Equal(objectId, command.ObjectId);
+    }
+
+    [Fact]
     public void Execute_WhenObjectExists_ExecutesInnerCommand()
     {
         var objectId = Guid.NewGuid();
