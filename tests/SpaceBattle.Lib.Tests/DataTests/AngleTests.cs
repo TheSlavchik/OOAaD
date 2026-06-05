@@ -4,6 +4,11 @@ namespace SpaceBattle.Lib.Tests.DataTests;
 
 public class AngleTests
 {
+    public AngleTests()
+    {
+        Angle.Denominator = 8;
+    }
+
     [Fact]
     public void Add_Angles_ReturnsCorrectResult()
     {
